@@ -134,15 +134,42 @@ export function RafflePurchaseClient({
   }, []);
 
   // Map DB account to known bank by name (static entries skip DB lookup)
-  const mergedBanks = KNOWN_BANKS.map((kb) => {
-    if ("staticAccount" in kb) return { ...kb, account: kb.staticAccount };
-    const match = dbAccounts.find(
-      (a) =>
-        a.bank_name?.toLowerCase().includes(kb.key) ||
-        kb.key.includes(a.bank_name?.toLowerCase().split(" ")[0] ?? "___"),
+
+
+const PAYPAL_STATIC = {
+  key: "paypal",
+  name: "PayPal",
+  logo: "https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg",
+  badge: "USD",
+  label: "PayPal",
+  isPaypal: true,
+  paypalUrl: PAYPAL_URL,
+  account: {
+    account_number: "makingmoneystyle",
+    account_type: "PayPal.me",
+  },
+}
+
+const mergedBanks = [
+  PAYPAL_STATIC,
+  ...dbAccounts.map((acc) => {
+    const known = KNOWN_BANKS.find(
+      (kb) =>
+        acc.bank_name?.toLowerCase().includes(kb.key) ||
+        kb.key.includes(acc.bank_name?.toLowerCase().split(" ")[0] ?? "___")
     );
-    return { ...kb, account: match ?? null };
-  });
+    return {
+      key: acc.id,
+      name: acc.bank_name,
+      logo: acc.bank_logo || known?.logo || "https://placehold.co/80x32/ffffff/000000?text=Bank",
+      account: acc,
+      badge: undefined,
+      label: undefined,
+      isPaypal: undefined,
+      paypalUrl: undefined,
+    };
+  }),
+];
 
   useEffect(() => {
     if (activeBankKey) return;

@@ -4,8 +4,9 @@ import type React from "react"
 
 import { useState } from "react"
 import { Plus, Edit, Trash2, Building2, Check, X } from "lucide-react"
-import { createBankAccount, updateBankAccount, deleteBankAccount } from "@/app/actions/payments"
+import { createBankAccount, updateBankAccount, deleteBankAccount, getBankAccounts,  getAllBankAccounts } from "@/app/actions/payments"
 import { useRouter } from "next/navigation"
+
 import { swal } from "@/lib/swal"
 
 interface BankAccount {
@@ -31,6 +32,8 @@ export function BankAccountsManager({ initialAccounts }: { initialAccounts: Bank
     bankLogo: "",
   })
 
+  
+
   const resetForm = () => {
     setFormData({
       bankName: "",
@@ -42,6 +45,11 @@ export function BankAccountsManager({ initialAccounts }: { initialAccounts: Bank
     setIsAdding(false)
     setEditingId(null)
   }
+
+ const reload = async () => {
+  const fresh = await getAllBankAccounts()
+  setAccounts(fresh)
+}
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -58,7 +66,7 @@ export function BankAccountsManager({ initialAccounts }: { initialAccounts: Bank
         await createBankAccount(formData)
         swal.success("Cuenta agregada correctamente")
       }
-      router.refresh()
+      await reload()
       resetForm()
     } catch (error: any) {
       swal.error("Error", error.message)
@@ -88,7 +96,7 @@ export function BankAccountsManager({ initialAccounts }: { initialAccounts: Bank
       try {
         await deleteBankAccount(id)
         swal.success("Cuenta eliminada correctamente")
-        router.refresh()
+        await reload()
       } catch (error: any) {
         swal.error(`Error: ${error.message}`)
       }
@@ -106,7 +114,7 @@ export function BankAccountsManager({ initialAccounts }: { initialAccounts: Bank
         isActive: !account.is_active,
       })
       swal.success(account.is_active ? "Cuenta desactivada" : "Cuenta activada")
-      router.refresh()
+      await reload()
     } catch (error: any) {
       swal.error(`Error: ${error.message}`)
     }
