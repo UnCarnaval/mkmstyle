@@ -163,6 +163,7 @@ export async function createBankTransferTickets({
       paymentStatus: "pending",
       ticketNumbers: (tickets ?? []).map((t: any) => t.ticket_number),
       bankReference,
+      screenshotUrl,
     })
   } catch (telegramError: any) {
     console.error("[v0] Error sending Telegram notification:", telegramError?.message ?? telegramError)

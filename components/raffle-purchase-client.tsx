@@ -163,7 +163,7 @@ const mergedBanks = [
       name: acc.bank_name,
       logo: acc.bank_logo || known?.logo || "https://placehold.co/80x32/ffffff/000000?text=Bank",
       account: acc,
-      badge: undefined,
+      badge: acc.is_usd ? "USD" : undefined,
       label: undefined,
       isPaypal: undefined,
       paypalUrl: undefined,
@@ -295,7 +295,7 @@ const mergedBanks = [
   };
 
   const inp = (field: string) =>
-    `w-full h-11 px-3 bg-[#0d0d0d] border text-white text-sm placeholder:text-neutral-700 outline-none transition-colors ${
+    `w-full h-11 px-3 bg-[#0d0d0d] border text-white text-sm placeholder:text-neutral-400 outline-none transition-colors ${
       errors[field]
         ? "border-red-500/60"
         : "border-white/10 focus:border-[#ffffff]/50"
@@ -1094,7 +1094,7 @@ const mergedBanks = [
                   setVerifyError("");
                 }}
                 placeholder="tu@correo.com"
-                className="flex-1 h-11 px-4 bg-[#0d0d0d] border border-r-0 text-white text-sm placeholder:text-neutral-700 outline-none transition-colors border-white/10 focus:border-[#ffffff]/50"
+                className="flex-1 h-11 px-4 bg-[#0d0d0d] border border-r-0 text-white text-sm placeholder:text-neutral-400 outline-none transition-colors border-white/10 focus:border-[#ffffff]/50"
                 disabled={verifyLoading}
               />
               <button

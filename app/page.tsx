@@ -27,7 +27,7 @@ export default async function HomePage() {
   return (
     <div className="min-h-screen bg-[#080808]">
 
-      <Hero heroImageUrl={siteSettings.hero_image_url} />
+      <Hero heroImageUrl={siteSettings.hero_image_url} heroImageMobileUrl={siteSettings.hero_image_mobile_url} />
 
       <section id="sorteos" className="py-20 sm:py-28 px-4 sm:px-6">
         <div className="container mx-auto">

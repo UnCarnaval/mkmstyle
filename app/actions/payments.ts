@@ -264,6 +264,7 @@ export async function createBankAccount(data: {
   accountNumber: string
   accountType: string
   bankLogo?: string
+  isUsd?: boolean
 }) {
   const supabase = await createServerClient()
 
@@ -289,6 +290,7 @@ export async function createBankAccount(data: {
       account_number: data.accountNumber,
       account_type: data.accountType,
       bank_logo: data.bankLogo || null,
+      is_usd: data.isUsd ?? false,
     })
     .select()
     .single()
@@ -307,6 +309,7 @@ export async function updateBankAccount(
     accountType: string
     isActive: boolean
     bankLogo?: string
+    isUsd?: boolean
   },
 ) {
   const supabase = await createServerClient()
@@ -334,6 +337,7 @@ export async function updateBankAccount(
       account_type: data.accountType,
       is_active: data.isActive,
       bank_logo: data.bankLogo || null,
+      is_usd: data.isUsd ?? false,
     })
     .eq("id", id)
 

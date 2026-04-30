@@ -4,8 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import { Upload, Loader2 } from "lucide-react"
-import { upload } from "@vercel/blob/client"
-import { updateSiteSettings } from "@/app/actions/site-settings"
+import { updateSiteSettings, uploadSiteImage } from "@/app/actions/site-settings"
 import { swal } from "@/lib/swal"
 import { useRouter } from "next/navigation"
 
@@ -14,6 +13,7 @@ interface SiteSettingsManagerProps {
     site_name: string
     logo_url: string | null
     hero_image_url: string | null
+    hero_image_mobile_url?: string | null
   }
 }
 
@@ -22,28 +22,24 @@ export function SiteSettingsManager({ initialSettings }: SiteSettingsManagerProp
   const [siteName, setSiteName] = useState(initialSettings.site_name)
   const [logoUrl, setLogoUrl] = useState(initialSettings.logo_url || "")
   const [heroImageUrl, setHeroImageUrl] = useState(initialSettings.hero_image_url || "")
+  const [heroImageMobileUrl, setHeroImageMobileUrl] = useState(initialSettings.hero_image_mobile_url || "")
   const [uploading, setUploading] = useState(false)
   const [uploadingHero, setUploadingHero] = useState(false)
+  const [uploadingHeroMobile, setUploadingHeroMobile] = useState(false)
   const [saving, setSaving] = useState(false)
 
-  const uploadSiteAsset = async (file: File, prefix: "logo" | "hero") => {
-    const ext = file.name.split(".").pop() || "png"
-    const filename = `site/${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`
-    const blob = await upload(filename, file, {
-      access: "public",
-      handleUploadUrl: "/api/upload-site-asset",
-      contentType: file.type,
-    })
-    return blob.url
+  const uploadViaAction = async (file: File, prefix: "logo" | "hero" | "hero-mobile"): Promise<string> => {
+    const fd = new FormData()
+    fd.append("file", file)
+    return uploadSiteImage(fd, prefix)
   }
 
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-
     setUploading(true)
     try {
-      const url = await uploadSiteAsset(file, "logo")
+      const url = await uploadViaAction(file, "logo")
       setLogoUrl(url)
       swal.success("Logo subido correctamente")
     } catch (error: any) {
@@ -57,17 +53,32 @@ export function SiteSettingsManager({ initialSettings }: SiteSettingsManagerProp
   const handleHeroUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-
     setUploadingHero(true)
     try {
-      const url = await uploadSiteAsset(file, "hero")
+      const url = await uploadViaAction(file, "hero")
       setHeroImageUrl(url)
-      swal.success("Portada subida correctamente")
+      swal.success("Portada desktop subida correctamente")
     } catch (error: any) {
       swal.error("Error al subir la portada", error?.message || "")
       console.error("[v0] Hero upload error:", error)
     } finally {
       setUploadingHero(false)
+    }
+  }
+
+  const handleHeroMobileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploadingHeroMobile(true)
+    try {
+      const url = await uploadViaAction(file, "hero-mobile")
+      setHeroImageMobileUrl(url)
+      swal.success("Portada mobile subida correctamente")
+    } catch (error: any) {
+      swal.error("Error al subir la portada mobile", error?.message || "")
+      console.error("[v0] Hero mobile upload error:", error)
+    } finally {
+      setUploadingHeroMobile(false)
     }
   }
 
@@ -78,6 +89,7 @@ export function SiteSettingsManager({ initialSettings }: SiteSettingsManagerProp
         siteName,
         logoUrl: logoUrl || null,
         heroImageUrl: heroImageUrl || null,
+        heroImageMobileUrl: heroImageMobileUrl || null,
       })
       swal.success("Configuración guardada correctamente")
       router.refresh()
@@ -137,16 +149,17 @@ export function SiteSettingsManager({ initialSettings }: SiteSettingsManagerProp
         )}
       </div>
 
+      {/* Desktop hero */}
       <div>
-        <label className="editorial-eyebrow text-neutral-400 mb-2 block">Portada del sitio</label>
+        <label className="editorial-eyebrow text-neutral-400 mb-2 block">Portada — Desktop</label>
         <p className="text-xs text-neutral-500 mb-3">
-          Imagen principal que se muestra en la página de inicio. Si la dejas vacía, el hero aparecerá sin imagen de fondo.
+          Imagen principal en pantallas medianas y grandes (≥768 px). Si no configuras la versión mobile, esta imagen también se usará en móvil.
         </p>
         <div className="flex flex-col sm:flex-row gap-3">
           <input
             value={heroImageUrl}
             onChange={(e) => setHeroImageUrl(e.target.value)}
-            placeholder="https://example.com/portada.jpg"
+            placeholder="https://example.com/portada-desktop.jpg"
             className="editorial-input flex-1"
           />
           <button
@@ -172,7 +185,7 @@ export function SiteSettingsManager({ initialSettings }: SiteSettingsManagerProp
         {heroImageUrl && (
           <div className="mt-4 p-4 border border-white/[0.07] bg-[#121212]">
             <p className="text-xs text-neutral-500 uppercase tracking-wider mb-2">Vista previa</p>
-            <img src={heroImageUrl || "/placeholder.svg"} alt="Portada" className="w-full max-h-64 object-cover" />
+            <img src={heroImageUrl || "/placeholder.svg"} alt="Portada desktop" className="w-full max-h-64 object-cover" />
           </div>
         )}
         {heroImageUrl && (
@@ -181,7 +194,57 @@ export function SiteSettingsManager({ initialSettings }: SiteSettingsManagerProp
             onClick={() => setHeroImageUrl("")}
             className="text-xs text-neutral-500 hover:text-white mt-2 underline-offset-2 hover:underline transition-colors"
           >
-            Quitar portada
+            Quitar portada desktop
+          </button>
+        )}
+      </div>
+
+      {/* Mobile hero */}
+      <div>
+        <label className="editorial-eyebrow text-neutral-400 mb-2 block">Portada — Mobile</label>
+        <p className="text-xs text-neutral-500 mb-3">
+          Imagen exclusiva para móviles (&lt;768 px). Recomendado formato vertical (9:16 o 4:5).
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <input
+            value={heroImageMobileUrl}
+            onChange={(e) => setHeroImageMobileUrl(e.target.value)}
+            placeholder="https://example.com/portada-mobile.jpg"
+            className="editorial-input flex-1"
+          />
+          <button
+            type="button"
+            onClick={() => document.getElementById("heroMobileFile")?.click()}
+            disabled={uploadingHeroMobile}
+            className="editorial-button-secondary"
+          >
+            {uploadingHeroMobile ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Subiendo...
+              </>
+            ) : (
+              <>
+                <Upload className="w-4 h-4" />
+                Cambiar portada
+              </>
+            )}
+          </button>
+          <input id="heroMobileFile" type="file" accept="image/*" onChange={handleHeroMobileUpload} className="hidden" />
+        </div>
+        {heroImageMobileUrl && (
+          <div className="mt-4 p-4 border border-white/[0.07] bg-[#121212]">
+            <p className="text-xs text-neutral-500 uppercase tracking-wider mb-2">Vista previa</p>
+            <img src={heroImageMobileUrl || "/placeholder.svg"} alt="Portada mobile" className="w-full max-h-64 object-cover object-top" />
+          </div>
+        )}
+        {heroImageMobileUrl && (
+          <button
+            type="button"
+            onClick={() => setHeroImageMobileUrl("")}
+            className="text-xs text-neutral-500 hover:text-white mt-2 underline-offset-2 hover:underline transition-colors"
+          >
+            Quitar portada mobile
           </button>
         )}
       </div>

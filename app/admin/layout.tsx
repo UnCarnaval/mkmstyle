@@ -2,9 +2,10 @@ import type React from "react"
 import { createServerClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import Link from "next/link"
-import { Home, Trophy, Settings, CreditCard, Clock, LogOut } from "lucide-react"
+import { LogOut } from "lucide-react"
 import { getSiteSettings } from "@/app/actions/site-settings"
 import { signOut } from "@/app/actions/auth"
+import { AdminNav, AdminMobileNav } from "@/components/admin-nav"
 
 export default async function AdminLayout({
   children,
@@ -30,14 +31,6 @@ export default async function AdminLayout({
   const siteName = settings?.site_name || "MakingMoney"
   const displayName = profile?.full_name || user.email || ""
 
-  const navItems = [
-    { href: "/admin", label: "Dashboard", icon: Home },
-    { href: "/admin/raffles", label: "Sorteos", icon: Trophy },
-    { href: "/admin/pending-payments", label: "Pagos Pendientes", icon: Clock },
-    { href: "/admin/sales", label: "Ventas", icon: CreditCard },
-    { href: "/admin/settings", label: "Configuración", icon: Settings },
-  ]
-
   return (
     <div className="flex min-h-screen bg-[#080808]">
       {/* Desktop sidebar */}
@@ -55,18 +48,7 @@ export default async function AdminLayout({
           </Link>
         </div>
 
-        <nav className="flex-1 px-3 py-4 space-y-1">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="flex items-center gap-3 px-3 py-3 text-neutral-400 hover:text-white hover:bg-white/[0.04] transition-colors text-xs font-semibold tracking-widest uppercase"
-            >
-              <item.icon className="w-4 h-4 flex-shrink-0" />
-              <span>{item.label}</span>
-            </Link>
-          ))}
-        </nav>
+        <AdminNav />
 
         <div className="border-t border-white/[0.07] px-6 py-5 space-y-3">
           <div>
@@ -105,20 +87,7 @@ export default async function AdminLayout({
 
       {/* Mobile bottom navigation */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-[#080808] border-t border-white/[0.07] z-50">
-        <nav className="flex items-center justify-around py-2">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="flex flex-col items-center gap-1 px-2 py-2 text-neutral-500 hover:text-white transition-colors"
-            >
-              <item.icon className="w-5 h-5" />
-              <span className="text-[0.6rem] tracking-widest uppercase">
-                {item.label.split(" ")[0]}
-              </span>
-            </Link>
-          ))}
-        </nav>
+        <AdminMobileNav />
       </div>
 
       <main className="flex-1 pt-14 lg:pt-0 pb-20 lg:pb-0 overflow-x-hidden">{children}</main>

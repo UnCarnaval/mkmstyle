@@ -1,10 +1,8 @@
 import { createServerClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import { BankAccountsManager } from "@/components/bank-accounts-manager"
-import { PaymentMethodsManager } from "@/components/payment-methods-manager"
 import { SiteSettingsManager } from "@/components/site-settings-manager"
 import { getAllBankAccounts } from "@/app/actions/payments"
-import { getPaymentMethodSettings } from "@/app/actions/payment-settings"
 import { getSiteSettings } from "@/app/actions/site-settings"
 
 export default async function AdminSettingsPage() {
@@ -24,7 +22,6 @@ export default async function AdminSettingsPage() {
   }
 
   const bankAccounts = await getAllBankAccounts()
-  const paymentMethods = await getPaymentMethodSettings()
   const siteSettings = await getSiteSettings()
 
   return (
@@ -45,15 +42,6 @@ export default async function AdminSettingsPage() {
             <p className="text-neutral-500 text-sm mt-1">Personaliza el nombre y logo de tu plataforma</p>
           </div>
           <SiteSettingsManager initialSettings={siteSettings} />
-        </section>
-
-        <section className="editorial-card p-6 sm:p-8" data-aos="fade-up">
-          <div className="mb-6">
-            <p className="editorial-eyebrow mb-2 text-neutral-400">Métodos</p>
-            <h2 className="text-xl font-black text-white">Métodos de pago disponibles</h2>
-            <p className="text-neutral-500 text-sm mt-1">Activa o desactiva los métodos de pago que ofreces</p>
-          </div>
-          <PaymentMethodsManager initialMethods={paymentMethods} />
         </section>
 
         <section className="editorial-card p-6 sm:p-8" data-aos="fade-up">

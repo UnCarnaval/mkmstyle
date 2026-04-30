@@ -17,6 +17,7 @@ interface BankAccount {
   account_type: string
   is_active: boolean
   bank_logo?: string
+  is_usd?: boolean
 }
 
 export function BankAccountsManager({ initialAccounts }: { initialAccounts: BankAccount[] }) {
@@ -30,6 +31,7 @@ export function BankAccountsManager({ initialAccounts }: { initialAccounts: Bank
     accountNumber: "",
     accountType: "Cuenta Corriente",
     bankLogo: "",
+    isUsd: false,
   })
 
   
@@ -41,6 +43,7 @@ export function BankAccountsManager({ initialAccounts }: { initialAccounts: Bank
       accountNumber: "",
       accountType: "Cuenta Corriente",
       bankLogo: "",
+      isUsd: false,
     })
     setIsAdding(false)
     setEditingId(null)
@@ -80,6 +83,7 @@ export function BankAccountsManager({ initialAccounts }: { initialAccounts: Bank
       accountNumber: account.account_number,
       accountType: account.account_type,
       bankLogo: account.bank_logo || "",
+      isUsd: account.is_usd ?? false,
     })
     setEditingId(account.id)
     setIsAdding(true)
@@ -112,6 +116,7 @@ export function BankAccountsManager({ initialAccounts }: { initialAccounts: Bank
         accountType: account.account_type,
         bankLogo: account.bank_logo,
         isActive: !account.is_active,
+        isUsd: account.is_usd ?? false,
       })
       swal.success(account.is_active ? "Cuenta desactivada" : "Cuenta activada")
       await reload()
@@ -153,6 +158,11 @@ export function BankAccountsManager({ initialAccounts }: { initialAccounts: Bank
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1 flex-wrap">
                   <h4 className="font-semibold text-white">{account.bank_name}</h4>
+                  {account.is_usd && (
+                    <span className="text-[0.6rem] font-bold tracking-widest px-1.5 py-0.5 border" style={{ color: "#d4af37", borderColor: "#d4af37" }}>
+                      USD
+                    </span>
+                  )}
                   <button
                     onClick={() => handleToggleActive(account)}
                     className={account.is_active ? "badge badge-success" : "badge badge-danger"}
@@ -187,6 +197,19 @@ export function BankAccountsManager({ initialAccounts }: { initialAccounts: Bank
 
       {isAdding ? (
         <div className="border border-white/[0.07] bg-[#0d0d0d] p-5">
+          <div className="flex items-center justify-between mb-5">
+            <p className="text-sm font-semibold text-white">
+              {editingId ? "Editar cuenta" : "Nueva cuenta"}
+            </p>
+            <button
+              type="button"
+              onClick={resetForm}
+              className="p-1.5 text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-colors"
+              aria-label="Cerrar"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="editorial-eyebrow text-neutral-400 mb-2 block">Nombre del banco</label>
@@ -245,6 +268,21 @@ export function BankAccountsManager({ initialAccounts }: { initialAccounts: Bank
                   <img src={formData.bankLogo || "/placeholder.svg"} alt="Preview" className="max-w-full max-h-full object-contain" />
                 </div>
               )}
+            </div>
+
+            <div>
+              <label className="flex items-center gap-3 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={formData.isUsd}
+                  onChange={(e) => setFormData({ ...formData, isUsd: e.target.checked })}
+                  className="w-4 h-4 accent-yellow-500"
+                />
+                <span className="text-sm text-neutral-300">
+                  Cuenta en dólares <span className="text-xs font-bold tracking-widest ml-1 px-1.5 py-0.5 border" style={{ color: "#d4af37", borderColor: "#d4af37" }}>USD</span>
+                </span>
+              </label>
+              <p className="text-xs text-neutral-500 mt-1 ml-7">Activa el indicador USD en el checkout mobile</p>
             </div>
 
             <div className="flex gap-3 pt-2">

@@ -2,15 +2,31 @@ import Link from "next/link"
 
 interface HeroProps {
   heroImageUrl: string | null
+  heroImageMobileUrl?: string | null
 }
 
-export function Hero({ heroImageUrl }: HeroProps) {
+export function Hero({ heroImageUrl, heroImageMobileUrl }: HeroProps) {
+  const hasMobile = Boolean(heroImageMobileUrl)
+  const hasDesktop = Boolean(heroImageUrl)
+
   return (
     <section className="relative h-screen min-h-[600px] max-h-[900px] flex items-center overflow-hidden">
-      {heroImageUrl && (
-        <div className="absolute inset-0">
+      {/* Mobile image — visible below md breakpoint */}
+      {hasMobile && (
+        <div className="absolute inset-0 block md:hidden">
           <img
-            src={heroImageUrl}
+            src={heroImageMobileUrl!}
+            alt=""
+            className="w-full h-full object-cover"
+            style={{ filter: "brightness(0.62) saturate(0.75)" }}
+          />
+        </div>
+      )}
+      {/* Desktop image — always visible on md+; also shown on mobile if no mobile image is set */}
+      {hasDesktop && (
+        <div className={`absolute inset-0 ${hasMobile ? "hidden md:block" : "block"}`}>
+          <img
+            src={heroImageUrl!}
             alt=""
             className="w-full h-full object-cover"
             style={{ filter: "brightness(0.62) saturate(0.75)" }}
