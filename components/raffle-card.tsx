@@ -62,7 +62,7 @@ export function RaffleCard({ raffle }: RaffleCardProps) {
               />
             </div>
             <span className="text-xs font-semibold shrink-0" style={{ color: "#ffffff" }}>
-              {progress}% rifado
+              {progress}% RIFADO
             </span>
           </div>
         </div>
