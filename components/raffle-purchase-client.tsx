@@ -264,7 +264,11 @@ const mergedBanks = [
           ? `${submittedCount} boleto${submittedCount !== 1 ? "s" : ""} registrado${submittedCount !== 1 ? "s" : ""}: ${nums}`
           : `${submittedCount} boleto${submittedCount !== 1 ? "s" : ""} registrado${submittedCount !== 1 ? "s" : ""}`;
 
-        await swal.success(titleMsg, `Pendiente de verificación. ${emailMsg}`);
+        await swal.success(
+          "Revisa tu correo 📩",
+          `(bandeja de entrada o spam) para dar seguimiento a tu boleto.\n\n${submittedCount > 1 ? "Boletos #" : "Boleto #"} ${nums}\n\n#Makingmoneyfamily❤️`,
+          20000,
+        );
       }
     } catch (err: any) {
       swal.error("Error", err.message);
