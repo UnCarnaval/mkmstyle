@@ -133,20 +133,7 @@ export async function createBankTransferTickets({
       },
     })
 
-    const pendingResult = await queueEmail({
-      toEmail: guestEmail,
-      toName: guestName,
-      subject: `⏳ Pago en Verificación - ${raffle.title}`,
-      emailType: "pending_payment",
-      data: {
-        raffleName: raffle.title,
-        ticketCount,
-        totalAmount,
-        ticketNumbers,
-      },
-    })
-
-    emailSent = Boolean(orderResult?.success || pendingResult?.success)
+    emailSent = Boolean(orderResult?.success)
   } catch (emailError: any) {
     console.error("[v0] Error queueing confirmation email:", emailError?.message ?? emailError)
   }
