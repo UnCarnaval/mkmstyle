@@ -1,6 +1,6 @@
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const RESEND_FROM_EMAIL =
-  process.env.RESEND_FROM_EMAIL || "noreply@news.dinamicapro.com";
+  process.env.RESEND_FROM_EMAIL || "noreply@makingmoneystyle.com";
 const BRAND = "MAKING MONEY STYLE";
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "https://makingmoneystyle.com";
@@ -96,10 +96,10 @@ const T = {
   border: "rgba(255, 255, 255, 0.20)",
   borderSoft: "rgba(255, 255, 255, 0.12)",
   textPrimary: "#ffffff",
-  textSecondary: "#d4d4d4",
-  textLabel: "#a8a8a8",
-  textMuted: "#8a8a8a",
-  textFaint: "#6b6b6b",
+  textSecondary: "#ffffff",
+  textLabel: "#ffffff",
+  textMuted: "#ffffff",
+  textFaint: "#ffffff",
   accent: "#ffffff",
   danger: "#f87171",
   font: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
