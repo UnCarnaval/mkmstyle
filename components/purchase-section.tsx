@@ -601,39 +601,43 @@ export function PurchaseSection({
 
       {/* ── T&C ── */}
       <div>
-        <label className="flex items-start gap-3 cursor-pointer group">
-          <div
-            className="w-5 h-5 border shrink-0 mt-0.5 flex items-center justify-center transition-colors"
-            style={{
-              borderColor: errors.terms
-                ? "#f87171"
-                : termsAccepted
-                  ? GOLD
-                  : "rgba(255,255,255,0.2)",
-              backgroundColor: termsAccepted ? `${GOLD}20` : "transparent",
-            }}
-            onClick={() => {
-              setTerms((t) => !t);
-              setErrors((v) => ({ ...v, terms: "" }));
-            }}
-          >
-            {termsAccepted && (
-              <CheckCircle2 className="w-3 h-3" style={{ color: GOLD }} />
-            )}
-          </div>
-          <span className="text-xs text-neutral-500 leading-relaxed select-none">
-            Acepto los{" "}
-            <a
-              href="/terms"
-              target="_blank"
-              className="underline transition-opacity hover:opacity-70"
-              style={{ color: GOLD }}
+        <label className="flex items-start gap-3 cursor-pointer group select-none">
+            {/* Checkbox Visual */}
+            <div
+              className="w-5 h-5 border shrink-0 mt-0.5 flex items-center justify-center transition-all duration-200"
+              style={{
+                borderColor: getBorderColor(),
+                backgroundColor: termsAccepted ? `${GOLD}20` : "transparent",
+              }}
             >
-              términos y condiciones
-            </a>{" "}
-            del sorteo. Entiendo que el pago quedará pendiente de verificación.
-          </span>
-        </label>
+              <input
+                type="checkbox"
+                className="hidden"
+                checked={termsAccepted}
+                onChange={() => {
+                  setTerms(!termsAccepted);
+                  setErrors((v) => ({ ...v, terms: "" }));
+                }}
+              />
+              {termsAccepted && (
+                <CheckCircle2 className="w-3.5 h-3.5" style={{ color: GOLD }} />
+              )}
+            </div>
+          
+            {/* Texto Informativo */}
+            <span className="text-xs text-neutral-500 leading-relaxed">
+              Acepto los{" "}
+              <a
+                href="/terms"
+                target="_blank"
+                className="underline hover:opacity-70 transition-opacity"
+                style={{ color: GOLD }}
+              >
+                términos y condiciones
+              </a>{" "}
+              del sorteo. Entiendo que el pago quedará pendiente de verificación.
+            </span>
+          </label>
         {errors.terms && (
           <p className="text-red-400 text-xs mt-2">{errors.terms}</p>
         )}
