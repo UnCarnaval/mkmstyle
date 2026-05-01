@@ -601,43 +601,44 @@ export function PurchaseSection({
 
       {/* ── T&C ── */}
       <div>
-        <label className="flex items-start gap-3 cursor-pointer group select-none">
-            {/* Checkbox Visual */}
-            <div
-              className="w-5 h-5 border shrink-0 mt-0.5 flex items-center justify-center transition-all duration-200"
-              style={{
-                borderColor: getBorderColor(),
-                backgroundColor: termsAccepted ? `${GOLD}20` : "transparent",
+       <label className="flex items-start gap-3 cursor-pointer group select-none">
+          {/* Checkbox Visual - Ahora con borde blanco sólido y más contraste */}
+          <div
+            className="w-5 h-5 border-2 shrink-0 mt-0.5 flex items-center justify-center transition-all duration-200"
+            style={{
+              // Si hay error es rojo, si está aceptado es Dorado, si no, BLANCO PURO
+              borderColor: errors.terms ? "#f87171" : termsAccepted ? GOLD : "#ffffff",
+              backgroundColor: termsAccepted ? `${GOLD}30` : "rgba(255,255,255,0.05)",
+            }}
+          >
+            <input
+              type="checkbox"
+              className="hidden"
+              checked={termsAccepted}
+              onChange={() => {
+                setTerms(!termsAccepted);
+                setErrors((v) => ({ ...v, terms: "" }));
               }}
+            />
+            {termsAccepted && (
+              <CheckCircle2 className="w-3.5 h-3.5" style={{ color: GOLD }} />
+            )}
+          </div>
+        
+          {/* Texto Informativo - Cambiado de neutral-500 (gris) a blanco/90 */}
+          <span className="text-xs text-white/90 leading-relaxed">
+            Acepto los{" "}
+            <a
+              href="/terms"
+              target="_blank"
+              className="underline font-medium hover:brightness-125 transition-all"
+              style={{ color: GOLD }}
             >
-              <input
-                type="checkbox"
-                className="hidden"
-                checked={termsAccepted}
-                onChange={() => {
-                  setTerms(!termsAccepted);
-                  setErrors((v) => ({ ...v, terms: "" }));
-                }}
-              />
-              {termsAccepted && (
-                <CheckCircle2 className="w-3.5 h-3.5" style={{ color: GOLD }} />
-              )}
-            </div>
-          
-            {/* Texto Informativo */}
-            <span className="text-xs text-neutral-500 leading-relaxed">
-              Acepto los{" "}
-              <a
-                href="/terms"
-                target="_blank"
-                className="underline hover:opacity-70 transition-opacity"
-                style={{ color: GOLD }}
-              >
-                términos y condiciones
-              </a>{" "}
-              del sorteo. Entiendo que el pago quedará pendiente de verificación.
-            </span>
-          </label>
+              términos y condiciones
+            </a>{" "}
+            del sorteo. <span className="text-white/60">Entiendo que el pago quedará pendiente de verificación.</span>
+          </span>
+        </label>
         {errors.terms && (
           <p className="text-red-400 text-xs mt-2">{errors.terms}</p>
         )}
