@@ -602,13 +602,14 @@ export function PurchaseSection({
       {/* ── T&C ── */}
       <div>
        <label className="flex items-start gap-3 cursor-pointer group select-none">
-          {/* Checkbox Visual - Ahora con borde blanco sólido y más contraste */}
+          {/* Checkbox Visual */}
           <div
             className="w-5 h-5 border-2 shrink-0 mt-0.5 flex items-center justify-center transition-all duration-200"
             style={{
-              // Si hay error es rojo, si está aceptado es Dorado, si no, BLANCO PURO
+              // Borde blanco sólido cuando no está marcado para que resalte
               borderColor: errors.terms ? "#f87171" : termsAccepted ? GOLD : "#ffffff",
-              backgroundColor: termsAccepted ? `${GOLD}30` : "rgba(255,255,255,0.05)",
+              // Un fondo muy sutil para que no se vea vacío del todo
+              backgroundColor: termsAccepted ? `${GOLD}20` : "rgba(255,255,255,0.1)",
             }}
           >
             <input
@@ -625,18 +626,18 @@ export function PurchaseSection({
             )}
           </div>
         
-          {/* Texto Informativo - Cambiado de neutral-500 (gris) a blanco/90 */}
-          <span className="text-xs text-white/90 leading-relaxed">
+          {/* Texto Informativo - Subido de tono para que sea legible */}
+          <span className="text-xs text-white leading-relaxed">
             Acepto los{" "}
             <a
               href="/terms"
               target="_blank"
-              className="underline font-medium hover:brightness-125 transition-all"
+              className="underline font-bold hover:opacity-80 transition-opacity"
               style={{ color: GOLD }}
             >
               términos y condiciones
             </a>{" "}
-            del sorteo. <span className="text-white/60">Entiendo que el pago quedará pendiente de verificación.</span>
+            del sorteo. <span className="text-white/70">Entiendo que el pago quedará pendiente de verificación.</span>
           </span>
         </label>
         {errors.terms && (
