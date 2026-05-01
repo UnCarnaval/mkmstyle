@@ -148,11 +148,11 @@ export function BankTransferCheckout({
         if (fileInput) fileInput.value = ""
 
         swal.success(
-          ticketCount > 1
-            ? `${ticketCount} boletos registrados: ${ticketNumbers}`
-            : `Boleto registrado: ${ticketNumbers}`,
-          "Tu pago está pendiente de verificación. Te notificaremos por email cuando sea aprobado.",
-          8000,
+          "Revisa tu correo 📩", // Título
+          `(bandeja de entrada o spam) para dar seguimiento a tu boleto.\n\n` +
+          `${ticketCount > 1 ? 'Boletos #' : 'Boleto #'} ${ticketNumbers}\n\n` +
+          "#Makingmoneyfamily❤️", // Descripción
+          15000 // Tiempo en milisegundos (15 segundos)
         )
       }
     } catch (error: any) {
