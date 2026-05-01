@@ -97,30 +97,29 @@ export function BankTransferCheckoutPage({ raffleId, raffle, ticketCount, guestI
 
       if (result.success) {
         const ticketNumbers = (result.tickets || [])
-          .map((t: any) => `#${t.ticket_number.toString().padStart(4, "0")}`)
+          .map((t: any) => `${t.ticket_number.toString().padStart(4, "0")}`) // Quitamos el # de aquí para controlarlo mejor abajo
           .join(", ")
-
+      
         flushSync(() => {
           setFormData({ name: "", email: "", phone: "", reference: "" })
           setScreenshot(null)
           setLoading(false)
           setUploading(false)
         })
+      
         const fileInput = document.getElementById("screenshot") as HTMLInputElement | null
         if (fileInput) fileInput.value = ""
-
-        const titleMsg = ticketNumbers
-          ? ticketCount > 1
-            ? `${ticketCount} boletos registrados: ${ticketNumbers}`
-            : `Boleto registrado: ${ticketNumbers}`
-          : ticketCount > 1
-            ? `${ticketCount} boletos registrados`
-            : "Boleto registrado"
-
+      
+        // Construimos el cuerpo del mensaje con el formato que pediste
+        const mensajeCuerpo = 
+          ` (bandeja de entrada o spam) para dar seguimiento a tu boleto.\n\n` +
+          `${ticketCount > 1 ? 'Boletos #' : 'Boleto #'} ${ticketNumbers}\n\n` +
+          `#Makingmoneyfamily❤️`;
+      
         await swal.success(
-          titleMsg,
-          "Tu pago está pendiente de verificación. Te notificaremos por email cuando sea aprobado.",
-          8000,
+          "Revisa tu correo 📩", // Nuevo título
+          mensajeCuerpo,          // Nuevo cuerpo con saltos de línea
+          35000,                  // Duración: 35 segundos
         )
       }
     } catch (error: any) {
